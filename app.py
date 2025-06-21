@@ -16,7 +16,7 @@ import logging
 import json
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -50,8 +50,14 @@ class WebEmotionDetector:
         """Initialize emotion detection model"""
         try:
             from fer import FER
-            self.fer_model = FER(mtcnn=True)
-            logger.info("FER emotion detection model loaded successfully")
+            # Try without mtcnn first, as it can cause issues on some systems
+            try:
+                self.fer_model = FER(mtcnn=False)
+                logger.info("FER emotion detection model loaded successfully (without MTCNN)")
+            except Exception as mtcnn_error:
+                logger.warning(f"MTCNN failed, trying without: {mtcnn_error}")
+                self.fer_model = FER()
+                logger.info("FER emotion detection model loaded successfully (default)")
         except ImportError:
             logger.warning("FER not available, using simplified emotion detection")
             self.fer_model = None
@@ -64,8 +70,11 @@ class WebEmotionDetector:
         try:
             if self.fer_model:
                 # Use FER for emotion detection
-                result = self.fer_model.predict(face_img)
-                if result:
+                logger.debug(f"Attempting FER emotion detection on image of shape: {face_img.shape}")
+                result = self.fer_model.detect_emotions(face_img)
+                logger.debug(f"FER result: {result}")
+                
+                if result and len(result) > 0:
                     dominant_emotion = result[0]['emotions']
                     # Convert FER format to our format
                     emotion_scores = {}
@@ -74,15 +83,19 @@ class WebEmotionDetector:
                     
                     # Find dominant emotion
                     dominant = max(emotion_scores.items(), key=lambda x: x[1])[0]
+                    logger.debug(f"Detected emotion: {dominant} with scores: {emotion_scores}")
                     return dominant, emotion_scores
                 else:
+                    logger.debug("FER returned no results, using neutral")
                     return 'neutral', {emotion: 0.0 for emotion in self.emotions}
             else:
                 # Simplified emotion detection (fallback)
+                logger.debug("Using simplified emotion detection")
                 return self.detect_emotion_simple(face_img)
                 
         except Exception as e:
             logger.warning(f"Emotion detection failed: {e}")
+            logger.debug(f"Exception details: {type(e).__name__}: {str(e)}")
             return 'neutral', {emotion: 0.0 for emotion in self.emotions}
     
     def detect_emotion_simple(self, face_img):
