@@ -19,7 +19,8 @@ import json
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+# Initialize Flask app with correct template folder
+app = Flask(__name__, template_folder='ui/templates')
 
 class WebEmotionDetector:
     """Web-based emotion detector for Flask interface"""
