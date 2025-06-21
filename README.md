@@ -49,7 +49,7 @@
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/YourUsername/EmoScan.git
+git clone https://github.com/lakshithamadumal/EmoScan.git
 cd EmoScan
 ```
 
@@ -370,7 +370,7 @@ We welcome contributions! Please follow these steps:
 
 ```bash
 # Clone and setup
-git clone https://github.com/YourUsername/EmoScan.git
+git clone https://github.com/lakshithamadumal/EmoScan.git
 cd EmoScan
 pip install -r requirements.txt
 
@@ -400,14 +400,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/YourUsername/EmoScan/issues)
-- **Documentation**: [Wiki](https://github.com/YourUsername/EmoScan/wiki)
-- **Discussions**: [Community forum](https://github.com/YourUsername/EmoScan/discussions)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/lakshithamadumal/EmoScan/issues)
+- **Documentation**: [Wiki](https://github.com/lakshithamadumal/EmoScan/wiki)
+- **Discussions**: [Community forum](https://github.com/lakshithamadumal/EmoScan/discussions)
 
 ### Social Media
-- Instagram: [itz_laky_](https://instagram.com/itz_laky_)
+- Instagram: [itz_laky_](https://instagram.com/laky.xyz)
 - TikTok: [@l_a_k_y_2](https://tiktok.com/@l_a_k_y_2)
-- GitHub: [YourUsername](https://github.com/YourUsername)
+- GitHub: [YourUsername](https://github.com/lakshithamadumal)
 
 ---
 
