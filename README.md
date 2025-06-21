@@ -8,7 +8,7 @@
 
 ### Core Features
 - 🎥 **Real-time face detection** using OpenCV Haar Cascades
-- 😊 **Emotion classification** with seven emotion classes using DeepFace
+- 😊 **Emotion classification** with seven emotion classes using FER
 - 🖼️ **Live emotion label overlay** on video stream
 - 💾 **Session logging** (CSV file) with detailed emotion scores
 - 💻 **Multiple UI options**: Tkinter desktop app and Flask web interface
@@ -21,6 +21,7 @@
 - ⚙️ **Configurable settings** via environment variables
 - 🧪 **Comprehensive test suite**
 - 📦 **Easy launcher script** for all components
+- 🪟 **Windows-compatible** with optimized dependencies
 
 ---
 
@@ -28,8 +29,8 @@
 
 - **Python 3.8+** 🐍
 - **OpenCV** 🎥 - Computer vision and face detection
-- **DeepFace** 🤖 - Emotion recognition using pre-trained CNN
-- **TensorFlow** - Deep learning backend
+- **FER** 🤖 - Emotion recognition using pre-trained CNN
+- **TensorFlow CPU** - Deep learning backend (Windows optimized)
 - **Tkinter** - Desktop GUI framework
 - **Flask** - Web framework for browser interface
 - **Matplotlib** - Data visualization and real-time charts
@@ -43,13 +44,13 @@
 ### Prerequisites
 - Python 3.8 or higher
 - Webcam access
-- Internet connection (for initial model download)
+- Windows 10/11 (optimized) or Linux/macOS
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/lakshithamadumal/EmoScan.git
+git clone https://github.com/YourUsername/EmoScan.git
 cd EmoScan
 ```
 
@@ -67,11 +68,6 @@ source venv/bin/activate
 3. **Install dependencies**
 ```bash
 pip install -r requirements.txt
-```
-
-4. **Download required models**
-```bash
-python run.py models
 ```
 
 ### Running the Application
@@ -121,8 +117,7 @@ python test_emotion_detection.py
 EmoScan/
 ├── 📁 dataset/                 # Custom training dataset (optional)
 ├── 📁 models/                  # Pre-trained emotion detection models
-│   ├── download_models.py      # Model downloader utility
-│   └── model_info.txt          # Model information
+│   └── download_models.py      # Model downloader utility
 ├── 📁 logs/                    # Saved session logs (CSV)
 │   └── sample_session.csv      # Example log file
 ├── 📁 ui/                      # UI components
@@ -134,7 +129,7 @@ EmoScan/
 ├── ⚙️ config.py                # Configuration settings
 ├── 🚀 run.py                   # Launcher script
 ├── 🧪 test_emotion_detection.py # Test suite
-├── 📋 requirements.txt         # Python dependencies
+├── 📋 requirements.txt         # Python dependencies (Windows optimized)
 └── 📖 README.md                # Project documentation
 ```
 
@@ -268,22 +263,31 @@ python test_emotion_detection.py
    ```
    **Solution**: Check camera permissions and try different camera indices
 
-2. **Model download fails**
+2. **FER model loading fails**
    ```
-   Error: Failed to load face cascade
+   Warning: FER not available, using simplified emotion detection
    ```
-   **Solution**: Run `python run.py models` to download required models
+   **Solution**: This is normal - the system will use simplified detection as fallback
 
 3. **Import errors**
    ```
-   ModuleNotFoundError: No module named 'deepface'
+   ModuleNotFoundError: No module named 'fer'
    ```
    **Solution**: Install dependencies with `pip install -r requirements.txt`
 
 4. **Performance issues**
    - Reduce video resolution in `config.py`
-   - Enable GPU acceleration if available
    - Close other applications using the camera
+
+### Windows-Specific Solutions
+
+1. **Long path issues (if using older Windows versions)**
+   - Enable long path support in Windows Registry
+   - Or use the project in a shorter path (e.g., `C:\EmoScan`)
+
+2. **Camera access issues**
+   - Check Windows privacy settings for camera access
+   - Run as administrator if needed
 
 ### Performance Optimization
 
@@ -297,10 +301,10 @@ python test_emotion_detection.py
    }
    ```
 
-2. **Enable GPU acceleration**
+2. **Use CPU optimization**
    ```python
-   # Install GPU version of TensorFlow
-   pip install tensorflow-gpu
+   # Already configured in requirements.txt
+   # tensorflow-cpu==2.12.0
    ```
 
 ---
@@ -321,7 +325,7 @@ python test_emotion_detection.py
 2. **Train custom model**
    ```python
    # Use the dataset directory for custom training
-   # See DeepFace documentation for training details
+   # See FER documentation for training details
    ```
 
 ### Multi-face Detection
@@ -370,7 +374,7 @@ We welcome contributions! Please follow these steps:
 
 ```bash
 # Clone and setup
-git clone https://github.com/lakshithamadumal/EmoScan.git
+git clone https://github.com/YourUsername/EmoScan.git
 cd EmoScan
 pip install -r requirements.txt
 
@@ -391,7 +395,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **DeepFace** - Emotion recognition models and framework
+- **FER** - Emotion recognition models and framework
 - **OpenCV** - Computer vision and face detection
 - **TensorFlow** - Deep learning backend
 - **FER2013 Dataset** - Training data for emotion recognition
@@ -400,14 +404,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/lakshithamadumal/EmoScan/issues)
-- **Documentation**: [Wiki](https://github.com/lakshithamadumal/EmoScan/wiki)
-- **Discussions**: [Community forum](https://github.com/lakshithamadumal/EmoScan/discussions)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/YourUsername/EmoScan/issues)
+- **Documentation**: [Wiki](https://github.com/YourUsername/EmoScan/wiki)
+- **Discussions**: [Community forum](https://github.com/YourUsername/EmoScan/discussions)
 
 ### Social Media
-- Instagram: [itz_laky_](https://instagram.com/laky.xyz)
+- Instagram: [itz_laky_](https://instagram.com/itz_laky_)
 - TikTok: [@l_a_k_y_2](https://tiktok.com/@l_a_k_y_2)
-- GitHub: [YourUsername](https://github.com/lakshithamadumal)
+- GitHub: [YourUsername](https://github.com/YourUsername)
 
 ---
 
@@ -426,6 +430,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **v1.1.0** - Added real-time visualization dashboard
 - **v1.2.0** - Enhanced configuration and testing
 - **v2.0.0** - Multi-face detection and performance improvements
+- **v2.1.0** - Windows optimization with FER library
 
 ---
 

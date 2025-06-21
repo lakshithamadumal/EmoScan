@@ -1,0 +1,18 @@
+EmoScan Model Information
+============================
+
+This directory contains pre-trained models for facial emotion recognition.
+
+Models included:
+1. facial_expression_model_weights.h5 - DeepFace emotion recognition model
+2. haarcascade_frontalface_default.xml - OpenCV face detection cascade
+
+Model Sources:
+- DeepFace: https://github.com/serengil/deepface
+- OpenCV: https://opencv.org/
+
+Usage:
+- The DeepFace model is automatically used by the emotion detection system
+- The Haar cascade is used for face detection in video streams
+
+For more information, see the main README.md file.
