@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoScan - Real-Time Facial Emotion Recognition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .video-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .video-feed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stats-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .emotion-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .emotion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .emotion-name {
+            font-weight: 600;
+            color: #2c3e50;
+            text-transform: capitalize;
+        }
+
+        .emotion-count {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .status-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: #27ae60;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>😊 EmoScan</h1>
+            <p>Real-Time Facial Emotion Recognition System</p>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <img id="videoFeed" class="video-feed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Initializing camera...</p>
+                </div>
+
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">Start Detection</button>
+                    <button id="stopBtn" class="btn btn-danger" disabled>Stop Detection</button>
+                    <button id="saveBtn" class="btn btn-secondary">Save Session Log</button>
+                    <button id="resetBtn" class="btn btn-secondary">Reset Stats</button>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="stats-title">📊 Emotion Statistics</h2>
+                <div class="emotion-stats" id="emotionStats">
+                    <div class="emotion-item">
+                        <span class="emotion-name">Happy</span>
+                        <span class="emotion-count" id="happyCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Sad</span>
+                        <span class="emotion-count" id="sadCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Angry</span>
+                        <span class="emotion-count" id="angryCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Neutral</span>
+                        <span class="emotion-count" id="neutralCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Surprise</span>
+                        <span class="emotion-count" id="surpriseCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Fear</span>
+                        <span class="emotion-count" id="fearCount">0</span>
+                    </div>
+                    <div class="emotion-item">
+                        <span class="emotion-name">Disgust</span>
+                        <span class="emotion-count" id="disgustCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="statusText">Ready to start emotion detection</span>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const loading = document.getElementById('loading');
+        const videoFeed = document.getElementById('videoFeed');
+
+        // Emotion count elements
+        const emotionCounts = {
+            'happy': document.getElementById('happyCount'),
+            'sad': document.getElementById('sadCount'),
+            'angry': document.getElementById('angryCount'),
+            'neutral': document.getElementById('neutralCount'),
+            'surprise': document.getElementById('surpriseCount'),
+            'fear': document.getElementById('fearCount'),
+            'disgust': document.getElementById('disgustCount')
+        };
+
+        let statsInterval;
+
+        // Event listeners
+        startBtn.addEventListener('click', startDetection);
+        stopBtn.addEventListener('click', stopDetection);
+        saveBtn.addEventListener('click', saveLog);
+        resetBtn.addEventListener('click', resetStats);
+
+        // Functions
+        async function startDetection() {
+            try {
+                showLoading(true);
+                const response = await fetch('/start_detection', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    statusIndicator.classList.add('active');
+                    statusText.textContent = 'Emotion detection active';
+                    startStatsUpdate();
+                    showLoading(false);
+                } else {
+                    alert('Error: ' + data.message);
+                    showLoading(false);
+                }
+            } catch (error) {
+                console.error('Error starting detection:', error);
+                alert('Failed to start detection');
+                showLoading(false);
+            }
+        }
+
+        async function stopDetection() {
+            try {
+                const response = await fetch('/stop_detection', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    statusIndicator.classList.remove('active');
+                    statusText.textContent = 'Emotion detection stopped';
+                    stopStatsUpdate();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error stopping detection:', error);
+                alert('Failed to stop detection');
+            }
+        }
+
+        async function saveLog() {
+            try {
+                const response = await fetch('/save_log', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    alert('Session log saved successfully!');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error saving log:', error);
+                alert('Failed to save session log');
+            }
+        }
+
+        async function resetStats() {
+            try {
+                const response = await fetch('/reset_stats', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    updateEmotionCounts({
+                        'happy': 0, 'sad': 0, 'angry': 0, 'neutral': 0,
+                        'surprise': 0, 'fear': 0, 'disgust': 0
+                    });
+                    alert('Statistics reset successfully!');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error resetting stats:', error);
+                alert('Failed to reset statistics');
+            }
+        }
+
+        function startStatsUpdate() {
+            statsInterval = setInterval(updateStats, 1000);
+        }
+
+        function stopStatsUpdate() {
+            if (statsInterval) {
+                clearInterval(statsInterval);
+            }
+        }
+
+        async function updateStats() {
+            try {
+                const response = await fetch('/get_stats');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    updateEmotionCounts(data.emotion_counts);
+                }
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        function updateEmotionCounts(counts) {
+            Object.keys(counts).forEach(emotion => {
+                if (emotionCounts[emotion]) {
+                    emotionCounts[emotion].textContent = counts[emotion];
+                }
+            });
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loading.classList.add('show');
+                videoFeed.style.display = 'none';
+            } else {
+                loading.classList.remove('show');
+                videoFeed.style.display = 'block';
+            }
+        }
+
+        // Initialize stats on page load
+        updateStats();
+    </script>
+</body>
+</html> 
