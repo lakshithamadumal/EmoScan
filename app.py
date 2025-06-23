@@ -14,6 +14,7 @@ import time
 from datetime import datetime
 import logging
 import json
+import config  # <-- Add this import
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -184,7 +185,7 @@ class WebEmotionDetector:
     def start_detection(self):
         """Start the emotion detection process"""
         try:
-            self.cap = cv2.VideoCapture(0)
+            self.cap = cv2.VideoCapture(int(config.VIDEO_SETTINGS['camera_index']))  # Use config camera index
             if not self.cap.isOpened():
                 raise Exception("Could not open webcam")
             
